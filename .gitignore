@@ -1,0 +1,5 @@
+venv/
+.idea/
+constants.py
+*.pyc
+__pycashe__
