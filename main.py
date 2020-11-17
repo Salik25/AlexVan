@@ -29,24 +29,23 @@ def get_top():
         print(i['symbol'])
 
 
-def get_top(date):
+def get_top(count, date):
     payload = {'access_key': f'{KEY}'}
     r = requests.get('http://api.marketstack.com/v1/tickers', payload)
     fullpricetop = 0
-    count = 4
-    g = 0
     with tqdm(total=count) as pbar:
-        for i in r.json()['data']:
-            if g < count:
-                payload = {'symbols': f'{i["symbol"]}', 'access_key': f'{KEY}', 'limit': 1, 'data': date}
+        tickers = r.json()['data']
+        for i, ticker in enumerate(tickers):
+            if i < count:
+                payload = {'symbols': f'{ticker["symbol"]}', 'access_key': f'{KEY}', 'limit': 1, 'data': date}
                 r = requests.get('http://api.marketstack.com/v1/eod', payload)
                 fullpricetop += r.json()['data'][0]['close']
                 pbar.update(1)
-                g += 1
             else:
-                print(fullpricetop)
                 break
+    print(fullpricetop)
 
 
 if __name__ == '__main__':
-    get_top(get_time())
+    count_of_tickers = int(input('Введите желаемое кол-во акций: '))
+    get_top(count_of_tickers, get_time())
