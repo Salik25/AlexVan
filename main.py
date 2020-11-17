@@ -67,7 +67,6 @@ def get_fullprice_of_top(count, date):
     for ticker in tqdm(get_symbols(count)):
         payload = {'symbols': ticker, 'access_key': f'{KEY}', 'limit': 1, 'date_to': date}
         r = requests.get('http://api.marketstack.com/v1/eod', payload)
-        print(r.json())
         fullpricetop += r.json()['data'][0]['close']           
     return fullpricetop
 
