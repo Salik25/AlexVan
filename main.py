@@ -8,7 +8,7 @@ def get_time():
     data = time.localtime()  # получить struct_time
     stroka = str(data.tm_year) + '-' + str(data.tm_mon) + '-' + str(data.tm_mday)
     stroka.split(' ')
-    print(stroka + 'T00:00:00+0000')
+    return stroka + 'T00:00:00+0000'
 
 
 def main():
@@ -65,12 +65,16 @@ def get_symbols(count):
 def get_fullprice_of_top(count, date):
     fullpricetop = 0
     for ticker in tqdm(get_symbols(count)):
-        payload = {'symbols': ticker, 'access_key': f'{KEY}', 'limit': 1, 'data': date}
+        payload = {'symbols': ticker, 'access_key': f'{KEY}', 'limit': 1, 'date_to': date}
         r = requests.get('http://api.marketstack.com/v1/eod', payload)
+        print(r.json())
         fullpricetop += r.json()['data'][0]['close']           
     return fullpricetop
 
 
 if __name__ == '__main__':
     count_of_tickers = int(input('Введите желаемое кол-во акций: '))
-    print(get_fullprice_of_top(count_of_tickers, get_time()))
+    print(get_time()) # 2020-11-17T00:00:00+0000
+    print(get_fullprice_of_top(count_of_tickers, '2020-11-17'))
+    print(get_fullprice_of_top(count_of_tickers, '2020-10-16T00:00:00+0000'))
+    #print(get_time())
