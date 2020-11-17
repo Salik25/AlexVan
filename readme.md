@@ -13,3 +13,8 @@
 - [ ] Работа с БД
 - [ ] logs
 - [ ] Мониторинг
+
+### Полезные ссылки
+* https://marketstack.com/documentation
+* https://jsonformatter.curiousconcept.com/
+* https://guides.github.com/features/mastering-markdown/
