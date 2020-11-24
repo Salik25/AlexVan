@@ -97,11 +97,11 @@ def get_price_tickers_of_month(list_of_tickers, start_date, end_date):
 
     return - словарь (дата : цена)
     """
-    price = 0
     payload = {'symbols': ','.join(list_of_tickers), 'access_key': f'{KEY}','date_from':start_date ,'date_to': end_date}
     r = requests.get('http://api.marketstack.com/v1/eod', payload)
     d = {}
     for i in r.json()['data']:
+        # if i['date'] in d:
         d[i['date']] = d.get(i['date'], 0) + i['close']
     return d
 
