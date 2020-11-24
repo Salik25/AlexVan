@@ -74,12 +74,37 @@ def get_symbols(count):
 
 
 def get_fullprice_of_top(count, date):
+    """
+        Функция для получения суммы цен первых count акций в date
+        count - кол-во акций
+        date - дата
+
+        return - стоимотсь всех count акций в этот день
+    """
     fullpricetop = 0
     for ticker in tqdm(get_symbols(count)):
         payload = {'symbols': ticker, 'access_key': f'{KEY}', 'limit': 1, 'date_to': date}
         r = requests.get('http://api.marketstack.com/v1/eod', payload)
         fullpricetop += r.json()['data'][0]['close']
     return fullpricetop
+
+def get_price_tickers_of_month(list_of_tickers, start_date, end_date):
+    """
+    Функция для получения цены акций из list_of_tickers за month
+    list_of_tickers - список акций
+    start_date - первый день месяца в формае даты
+    end_date - последний день месяца в формате даты
+
+    return - словарь (дата : цена)
+    """
+    price = 0
+    payload = {'symbols': ','.join(list_of_tickers), 'access_key': f'{KEY}','date_from':start_date ,'date_to': end_date}
+    r = requests.get('http://api.marketstack.com/v1/eod', payload)
+    d = {}
+    for i in r.json()['data']:
+        d[i['date']] = d.get(i['date'], 0) + i['close']
+    return d
+
 
 
 def get_all_price_in_month(count, data): # заполнение словаря данными о ценнах топовых компаний в каждый из дней
@@ -104,12 +129,39 @@ def good_and_bad_day(mass_price, count_g_d, count_b_d): # соортировка
 
 
 if __name__ == '__main__':
-    count_of_tickers = int(input('Введите желаемое кол-во акций: '))
-    print('Выберите дату.')
-    y = int(input('Введите год: '))
-    m = int(input('Введите месяц: '))
-    mass_day = get_count_day_in_months(get_count_of_day(y, m), y, m)
-    # print(get_all_price_in_month(count_of_tickers, mass_day))
-    count_of_good_day = int(input('Сколько хороших дней вывести: '))
-    count_of_bad_day = int(input('Сколько плохих дней вывести: '))
-    print(good_and_bad_day(get_all_price_in_month(count_of_tickers, mass_day), count_of_good_day, count_of_bad_day))
+    #count_of_tickers = int(input('Введите желаемое кол-во акций: '))
+    #list_ticker = get_symbols(count_of_tickers)
+    #print(list_ticker)
+    # print('Выберите дату.')
+    # y = int(input('Введите год: '))
+    # m = int(input('Введите месяц: '))
+    # print(get_price_tickers_of_month(list_ticker,'2020-10-01','2020-10-31'))
+    # mass_day = get_count_day_in_months(get_count_of_day(y, m), y, m)
+    # # print(get_all_price_in_month(count_of_tickers, mass_day))
+    # count_of_good_day = int(input('Сколько хороших дней вывести: '))
+    # count_of_bad_day = int(input('Сколько плохих дней вывести: '))
+    # print(good_and_bad_day(get_all_price_in_month(count_of_tickers, mass_day), count_of_good_day, count_of_bad_day))
+    # print(get_count_day_in_months(get_count_of_day(y, m), y, m))
+    print('Введи дату.')
+    try:
+        dt = datetime.datetime.strptime(input('Введите дату в формате 2012-11-02: '), "%Y-%m-%d")
+    except ValueError:
+        print('Ну ты лох')
+
+    '''
+    фнкция (список акций, дату)
+    получить ценну акций за каждый день
+        get_price_tickers_of_month():
+
+    сгоортировка данных и выдача ответа
+    '''
+
+
+
+"""
+
+
+m = [1,2,3,4]
+str(m,emd=',')
+'1,2,3,4'
+"""
